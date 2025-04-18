@@ -5,7 +5,7 @@ import pandas as pd
 from flask_cors import CORS  # Enable CORS for cross-origin requests
 
 app = Flask(__name__)
-CORS(app)  # Allow access from other origins (like React Native app)
+CORS(app, origins=["*"])  # during testing
 
 # Load the pre-trained pipeline
 pipe = pickle.load(open('pipe.pkl', 'rb'))
