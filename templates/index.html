@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL Win Predictor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>IPL Win Predictor</h1>
+    <form method="POST" id="prediction-form">
+        <div class="form-section">
+            <label for="batting_team">Batting Team:</label>
+            <select name="batting_team" id="batting_team">
+                {% for team in teams %}
+                <option value="{{ team }}">{{ team }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-section">
+            <label for="bowling_team">Bowling Team:</label>
+            <select name="bowling_team" id="bowling_team">
+                {% for team in teams %}
+                <option value="{{ team }}">{{ team }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-section">
+            <label for="city">Host City:</label>
+            <select name="city" id="city">
+                {% for city in cities %}
+                <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-section">
+            <label for="target">Target:</label>
+            <input type="number" name="target" id="target" required>
+        </div>
+        <div class="form-section">
+            <label for="score">Score:</label>
+            <input type="number" name="score" id="score" required>
+        </div>
+        <div class="form-section">
+            <label for="overs">Overs Completed:</label>
+            <input type="number" name="overs" step="0.1" id="overs" required>
+        </div>
+        <div class="form-section">
+            <label for="wickets">Wickets Out:</label>
+            <input type="number" name="wickets" id="wickets" required>
+        </div>
+        <button type="submit">Predict</button>
+    </form>
+
+    <div id="result">
+        {% if result %}
+        <h2>Prediction Result:</h2>
+        <p>{{ result.batting_team }}: {{ result.win }}%</p>
+        <p>{{ result.bowling_team }}: {{ result.loss }}%</p>
+        {% endif %}
+    </div>
+
+    <script>
+        const form = document.getElementById('prediction-form');
+        const resultDiv = document.getElementById('result');
+
+        form.addEventListener('input', () => {
+            // Clear the result when any input field changes
+            resultDiv.innerHTML = '';
+        });
+    </script>
+</body>
+</html>
