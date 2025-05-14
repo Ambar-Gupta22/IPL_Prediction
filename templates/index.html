@@ -1,81 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPL Win Predictor</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .form-section {
-            margin-bottom: 20px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPL Win Predictor</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f8fa;
+      margin: 0;
+      padding: 40px;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      color: #004aad;
+      margin-bottom: 40px;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-section {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    select, input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+      background-color: #004aad;
+      color: white;
+      font-size: 16px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #00327d;
+    }
+
+    #result {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px 30px;
+      background-color: #e6f0ff;
+      border-left: 5px solid #004aad;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    #result h2 {
+      margin-top: 0;
+    }
+  </style>
 </head>
 <body>
-    <h1>IPL Win Predictor</h1>
-    <form method="POST" id="prediction-form">
-        <div class="form-section">
-            <label for="batting_team">Batting Team:</label>
-            <select name="batting_team" id="batting_team">
-                {% for team in teams %}
-                <option value="{{ team }}">{{ team }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-section">
-            <label for="bowling_team">Bowling Team:</label>
-            <select name="bowling_team" id="bowling_team">
-                {% for team in teams %}
-                <option value="{{ team }}">{{ team }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-section">
-            <label for="city">Host City:</label>
-            <select name="city" id="city">
-                {% for city in cities %}
-                <option value="{{ city }}">{{ city }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-section">
-            <label for="target">Target:</label>
-            <input type="number" name="target" id="target" required>
-        </div>
-        <div class="form-section">
-            <label for="score">Score:</label>
-            <input type="number" name="score" id="score" required>
-        </div>
-        <div class="form-section">
-            <label for="overs">Overs Completed:</label>
-            <input type="number" name="overs" step="0.1" id="overs" required>
-        </div>
-        <div class="form-section">
-            <label for="wickets">Wickets Out:</label>
-            <input type="number" name="wickets" id="wickets" required>
-        </div>
-        <button type="submit">Predict</button>
-    </form>
-
-    <div id="result">
-        {% if result %}
-        <h2>Prediction Result:</h2>
-        <p>{{ result.batting_team }}: {{ result.win }}%</p>
-        <p>{{ result.bowling_team }}: {{ result.loss }}%</p>
-        {% endif %}
+  <h1>IPL Win Predictor</h1>
+  <form method="POST" id="prediction-form">
+    <div class="form-section">
+      <label for="batting_team">Batting Team:</label>
+      <select name="batting_team" id="batting_team">
+        {% for team in teams %}
+        <option value="{{ team }}">{{ team }}</option>
+        {% endfor %}
+      </select>
     </div>
+    <div class="form-section">
+      <label for="bowling_team">Bowling Team:</label>
+      <select name="bowling_team" id="bowling_team">
+        {% for team in teams %}
+        <option value="{{ team }}">{{ team }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-section">
+      <label for="city">Host City:</label>
+      <select name="city" id="city">
+        {% for city in cities %}
+        <option value="{{ city }}">{{ city }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-section">
+      <label for="target">Target:</label>
+      <input type="number" name="target" id="target" required>
+    </div>
+    <div class="form-section">
+      <label for="score">Score:</label>
+      <input type="number" name="score" id="score" required>
+    </div>
+    <div class="form-section">
+      <label for="overs">Overs Completed:</label>
+      <input type="number" name="overs" step="0.1" id="overs" required>
+    </div>
+    <div class="form-section">
+      <label for="wickets">Wickets Out:</label>
+      <input type="number" name="wickets" id="wickets" required>
+    </div>
+    <button type="submit">Predict</button>
+  </form>
 
-    <script>
-        const form = document.getElementById('prediction-form');
-        const resultDiv = document.getElementById('result');
+  <div id="result">
+    {% if result %}
+    <h2>Prediction Result:</h2>
+    <p><strong>{{ result.batting_team }}</strong>: {{ result.win }}%</p>
+    <p><strong>{{ result.bowling_team }}</strong>: {{ result.loss }}%</p>
+    {% endif %}
+  </div>
 
-        form.addEventListener('input', () => {
-            // Clear the result when any input field changes
-            resultDiv.innerHTML = '';
-        });
-    </script>
+  <script>
+    const form = document.getElementById('prediction-form');
+    const resultDiv = document.getElementById('result');
+
+    form.addEventListener('input', () => {
+      resultDiv.innerHTML = '';
+    });
+  </script>
 </body>
 </html>
