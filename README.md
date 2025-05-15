@@ -44,83 +44,60 @@ pip install -r requirements.txt
 4.python app.py
 
 ⚙️ app.py – Backend for IPL Match Win Prediction
-This is the backend Flask application for the IPL Match Win Prediction System. It serves both a browser-based frontend and a React Native mobile app via REST API.
+This is the backend Flask application for the IPL Match Win Prediction System. It supports both a browser-based interface and a mobile app interface through RESTful APIs.
 
-📦 Features:
-Predicts the winning probability of an IPL team based on live match data.
+🚀 Features
+- Predicts IPL match outcomes using a trained machine learning model.
 
-Supports form-based input (via HTML UI).
+- Accepts input through both a web form and JSON API.
 
-Provides a JSON-based API endpoint for integration with mobile apps (like React Native).
+- Returns win/loss probabilities in real-time.
 
-🔧 How it works:
-1. Imports and Setup
-python
-Copy
-Edit
+- Mobile and web compatible.
+
+📁 File Overview: app.py
+
+# 1. Setup
 from flask import Flask, request, render_template, jsonify
 import pickle, pandas as pd
 from flask_cors import CORS
-Uses Flask for serving routes and handling HTTP requests.
 
-Loads a pre-trained machine learning pipeline from pipe.pkl.
+# Flask app initialization
+app = Flask(__name__)
+CORS(app, origins=["*"])  # Enable CORS for cross-origin requests
 
-Enables Cross-Origin Resource Sharing (CORS) to allow frontend apps to interact during development.
+# Load pre-trained ML pipeline
+pipe = pickle.load(open('pipe.pkl', 'rb'))
 
-2. Static Team and City Lists
-python
-Copy
-Edit
-teams = [ ... ]
-cities = [ ... ]
-Predefined IPL team and city names are used as valid options for prediction.
+⚙️ Web Interface Route (/)
+This route serves an HTML form for users to manually enter match information:
 
-3. / Route – Web Interface
-python
-Copy
-Edit
+Extracts values like batting_team, bowling_team, city, target, score, overs, wickets.
+
+ - Computes derived features:
+
+ - runs_left = target - score
+
+ - balls_left = 120 - overs * 6
+
+ - wickets = 10 - fallen_wickets
+
+ - crr = score / overs
+
+ - rrr = (runs_left * 6) / balls_left
+
+Passes this data to the model for prediction.
+
+Renders the results on the same page.
+
 @app.route('/', methods=['GET', 'POST'])
-Renders an HTML form (index.html) for user input.
+def home():
+    # Form-based prediction and result rendering
+    
+📱 API Route (/predict)
+Used by mobile apps (like React Native):
 
-On form submission (POST), it:
-
-Extracts match parameters (team, city, target, score, etc.)
-
-Computes match features like runs_left, balls_left, crr (Current Run Rate), rrr (Required Run Rate).
-
-Creates a pandas.DataFrame to pass input into the model.
-
-Gets win/loss probabilities using pipe.predict_proba(...).
-
-Displays the result back to the browser.
-
-4. /predict Route – API for Mobile App
-python
-Copy
-Edit
-@app.route('/predict', methods=['POST'])
-Accepts JSON input from mobile apps.
-
-Performs the same feature calculation and prediction steps as the web interface.
-
-Returns a JSON response with win and loss percentages.
-
-5. Model Prediction
-python
-Copy
-Edit
-prediction = pipe.predict_proba(input_df)
-The ML model outputs probabilities for both win and loss classes.
-
-Output is rounded and formatted for readability.
-
-📡 Example JSON API Request
-json
-Copy
-Edit
-POST /predict
-Content-Type: application/json
-
+Accepts POST requests with JSON body:
 {
   "batting_team": "Chennai Super Kings",
   "bowling_team": "Mumbai Indians",
@@ -130,14 +107,14 @@ Content-Type: application/json
   "overs": 12.0,
   "wickets": 4
 }
-🧠 Output
-json
-Copy
-Edit
+Returns prediction:
 {
   "win": 64,
   "loss": 36
 }
 
+@app.route('/predict', methods=['POST'])
+def predict():
+    # JSON-based prediction API
 
 
